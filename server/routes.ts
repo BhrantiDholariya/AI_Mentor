@@ -2,11 +2,11 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { chatRequestSchema } from "@shared/schema";
 
-const LYZR_API_URL = "https://agent-prod.studio.lyzr.ai/v3/inference/chat/";
-const LYZR_API_KEY = "sk-default-605eFIybLtk5ZQXT1oa4bf6QzWW3U6ed";
-const USER_ID = "bdholariya2319@gmail.com";
-const AGENT_ID = "693f8cbb11f992bd361d4869";
-const SESSION_ID = "693f8cbb11f992bd361d4869-yurp6vp4j9d";
+const LYZR_API_URL = process.env.LYZR_API_URL || "https://agent-prod.studio.lyzr.ai/v3/inference/chat/";
+const LYZR_API_KEY = process.env.LYZR_API_KEY;
+const USER_ID = process.env.LYZR_USER_ID || "";
+const AGENT_ID = process.env.LYZR_AGENT_ID || "";
+const SESSION_ID = process.env.LYZR_SESSION_ID || "";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -14,6 +14,13 @@ export async function registerRoutes(
 ): Promise<Server> {
   app.post("/api/chat", async (req, res) => {
     try {
+      if (!LYZR_API_KEY) {
+        console.error("LYZR_API_KEY is not configured");
+        return res.status(500).json({ 
+          error: "AI Mentor is not properly configured. Please set up the API key." 
+        });
+      }
+
       const parseResult = chatRequestSchema.safeParse(req.body);
       
       if (!parseResult.success) {
