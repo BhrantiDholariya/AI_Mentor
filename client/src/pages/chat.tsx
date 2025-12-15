@@ -264,7 +264,7 @@ export default function Chat() {
                 size="icon"
                 onClick={handleSubmit}
                 disabled={!inputValue.trim() || chatMutation.isPending}
-                className="absolute right-2 bottom-2 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-600 hover:to-cyan-600 disabled:from-gray-600 disabled:to-gray-600 disabled:opacity-50"
+                className="absolute right-3 bottom-3 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-600 hover:to-cyan-600 disabled:from-gray-600 disabled:to-gray-600 disabled:opacity-50"
                 aria-label="Send message"
                 data-testid="button-send"
               >
