@@ -13,6 +13,14 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
   app.post("/api/chat", async (req, res) => {
+    console.log("DEBUG ENV", {
+  LYZR_API_URL,
+  LYZR_API_KEY: !!process.env.LYZR_API_KEY,
+  LYZR_AGENT_ID: process.env.LYZR_AGENT_ID,
+  LYZR_USER_ID: process.env.LYZR_USER_ID,
+  LYZR_SESSION_ID: process.env.LYZR_SESSION_ID,
+});
+
     try {
       if (!LYZR_API_KEY) {
         console.error("LYZR_API_KEY is not configured");
