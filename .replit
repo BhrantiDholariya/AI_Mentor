@@ -37,3 +37,11 @@ author = "agent"
 task = "shell.exec"
 args = "npm run dev"
 waitForPort = 5000
+
+[userenv]
+
+[userenv.shared]
+LYZR_USER_ID = "bdholariya2319@gmail.com"
+LYZR_AGENT_ID = "693f8cbb11f992bd361d4869"
+LYZR_SESSION_ID = "693f8cbb11f992bd361d4869-yurp6vp4j9d"
+LYZR_API_URL = "https://agent-prod.studio.lyzr.ai/v3/inference/chat/"

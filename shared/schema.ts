@@ -16,3 +16,21 @@ export const insertUserSchema = createInsertSchema(users).pick({
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
+
+export const messageSchema = z.object({
+  id: z.string(),
+  role: z.enum(["user", "assistant"]),
+  content: z.string(),
+});
+
+export const chatRequestSchema = z.object({
+  message: z.string().min(1, "Message cannot be empty"),
+});
+
+export const chatResponseSchema = z.object({
+  response: z.string(),
+});
+
+export type Message = z.infer<typeof messageSchema>;
+export type ChatRequest = z.infer<typeof chatRequestSchema>;
+export type ChatResponse = z.infer<typeof chatResponseSchema>;

@@ -1,16 +1,72 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { chatRequestSchema } from "@shared/schema";
+
+const LYZR_API_URL = "https://agent-prod.studio.lyzr.ai/v3/inference/chat/";
+const LYZR_API_KEY = "sk-default-605eFIybLtk5ZQXT1oa4bf6QzWW3U6ed";
+const USER_ID = "bdholariya2319@gmail.com";
+const AGENT_ID = "693f8cbb11f992bd361d4869";
+const SESSION_ID = "693f8cbb11f992bd361d4869-yurp6vp4j9d";
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // put application routes here
-  // prefix all routes with /api
+  app.post("/api/chat", async (req, res) => {
+    try {
+      const parseResult = chatRequestSchema.safeParse(req.body);
+      
+      if (!parseResult.success) {
+        return res.status(400).json({ 
+          error: "Invalid request", 
+          details: parseResult.error.errors 
+        });
+      }
 
-  // use storage to perform CRUD operations on the storage interface
-  // e.g. storage.insertUser(user) or storage.getUserByUsername(username)
+      const { message } = parseResult.data;
+
+      const response = await fetch(LYZR_API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": LYZR_API_KEY,
+        },
+        body: JSON.stringify({
+          user_id: USER_ID,
+          agent_id: AGENT_ID,
+          session_id: SESSION_ID,
+          message: message,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error("Lyzr API error:", response.status, response.statusText);
+        return res.status(502).json({ 
+          error: "Failed to get response from AI Mentor" 
+        });
+      }
+
+      const data = await response.json();
+      
+      let responseText = "";
+      if (data.response) {
+        responseText = data.response;
+      } else if (data.message) {
+        responseText = data.message;
+      } else if (typeof data === "string") {
+        responseText = data;
+      } else {
+        responseText = JSON.stringify(data);
+      }
+
+      return res.json({ response: responseText });
+    } catch (error) {
+      console.error("Chat API error:", error);
+      return res.status(500).json({ 
+        error: "An unexpected error occurred" 
+      });
+    }
+  });
 
   return httpServer;
 }
